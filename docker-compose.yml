@@ -1,0 +1,40 @@
+services:
+  n8n:
+    image: n8nio/n8n
+    container_name: n8n-base
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_PROTOCOL=http
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=n8n
+      - N8N_BASIC_AUTH_PASSWORD=n8n
+
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-$(openssl rand -hex 32)}
+
+      # Connect to your local Postgres server
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=host.docker.internal
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n
+
+      # Function nodes need axios or pg
+      - NODE_FUNCTION_ALLOW_EXTERNAL=axios,pg
+
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+
+    volumes:
+      - /home/om2k4/.n8n:/home/node/.n8n
+
+    restart: always
+    networks:
+      - n8n-net
+
+networks:
+  n8n-net:
