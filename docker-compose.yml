@@ -32,7 +32,7 @@ services:
     volumes:
       - /home/om2k4/.n8n:/home/node/.n8n
 
-    restart: always
+    restart: no
     networks:
       - n8n-net
 
